@@ -1,5 +1,27 @@
 .Navbar__container {
+  display: flex; // Make it a flex container
+  align-items: center; // Center items vertically
   width: 100%;
-  padding: 10px;
-  background-color: yellow;
+  padding: 20px;
+  background-color: #e3f4fe;
+}
+
+.Navbar--title {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.Navbar--profileimgLink,
+.Navbar--profileimg {
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+}
+
+.Navbar--login {
+  text-decoration: none;
+  color: black;
+  margin-left: auto;
+  font-weight: bold;
 }
