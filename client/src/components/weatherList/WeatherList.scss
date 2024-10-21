@@ -1,20 +1,28 @@
-@use "../../responsive" as *;
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/typography" as *;
+@use "../../styles/variable" as *;
 
-.WeatherList {
-  &__container {
-    display: flex;
+.WeatherList__container {
+  width: 100%;
+}
+
+.WeatherList--data__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+  @include lg {
     flex-direction: row;
+  }
 
-    @include lg {
-      flex-direction: row;
-      overflow-x: auto;
-    }
+  @include md {
+  }
 
-    @include md {
-    }
-
-    @include sm {
-      flex-direction: column;
-    }
+  @include sm {
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 100vh;
   }
 }

@@ -1,0 +1,102 @@
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/typography" as *;
+@use "../../styles/variable" as *;
+
+.Home__container {
+  margin: 10px;
+}
+.WeatherForecast__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Default alignment
+  justify-content: center;
+  background-color: #e3f4fe;
+  padding: 20px;
+  border-radius: 10px;
+  align-items: flex-start;
+  overflow-x: hidden;
+
+  @include sm {
+    align-items: center;
+  }
+
+  @include md {
+    align-items: flex-start;
+  }
+}
+
+.WeatherForecast--title__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.toggle-switch__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-switch__label {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.toggle-switch__input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch__slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ed8179;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.toggle-switch__slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggle-switch__input:checked + .toggle-switch__slider {
+  background-color: #71ba73;
+}
+
+.toggle-switch__input:checked + .toggle-switch__slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-switch__status {
+  font-weight: bold;
+  color: #333;
+}
+
+.toggle-switch--play {
+  font-weight: bold;
+  color: #71ba73;
+}
+
+.toggle-switch--pause {
+  font-weight: bold;
+  color: #ed8179;
+}
