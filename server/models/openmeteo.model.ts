@@ -18,6 +18,7 @@ export const fetchWeather = async (req: Request, res: Response) => {
       params: {
         latitude: 52.52, // dynamic based on user location (req.query.latitude)
         longitude: 13.41, // (req.query.longitude)
+        current: "temperature_2m",
         hourly: "temperature_2m",
         start_date: start,
         end_date: end,

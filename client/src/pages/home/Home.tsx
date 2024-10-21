@@ -2,26 +2,61 @@ import "./Home.scss";
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../lib/apiRequest";
 import WeatherList from "../../components/weatherList/WeatherList";
-import { WeatherHourlyData } from "../../config/openmeteo-config";
+import {
+  WeatherTodayProps,
+  WeatherForecastProps,
+} from "../../config/openmeteo-config";
 
 const Home = () => {
-  const [weatherAllData, setWeatherAllData] = useState<WeatherHourlyData>({
-    hourly: {
-      time: [],
-      temperature_2m: [],
+  const [weatherTodayData, setWeatherTodayData] = useState<WeatherTodayProps>({
+    current: {
+      time: "",
+      interval: 0,
+      temperature_2m: 0,
     },
   });
-  const [fetchingWeatherALlData, setFetchingWeatherALlData] = useState(true);
+  const [weatherForecastData, setWeatherForecastData] =
+    useState<WeatherForecastProps>({
+      hourly: {
+        time: [],
+        temperature_2m: [],
+      },
+    });
+  const [fetchingWeatherData, setFetchingWeatherData] = useState(true);
   const [isUpdating, setIsUpdating] = useState(true);
+
+  const handleFetchCurrentWeather = async () => {
+    try {
+      const response = await apiRequest.get("/openmeteo/weather");
+      setWeatherTodayData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch weather data", error);
+    } finally {
+      setFetchingWeatherData(false);
+    }
+  };
+
+  // TODO: write StoreWeather API Endpoint
+  const handleStoreCurrentWeather = async () => {
+    try {
+      const response = await apiRequest.get("/openmeteo/weather");
+      setWeatherTodayData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch weather data", error);
+    } finally {
+      setFetchingWeatherData(false);
+    }
+  };
 
   const fetchWeatherAllData = async () => {
     try {
       const response = await apiRequest.get("/openmeteo/weather");
-      setWeatherAllData(response.data);
+      setWeatherTodayData(response.data);
+      setWeatherForecastData(response.data);
     } catch (error) {
-      console.error("Failed to fetch team data", error);
+      console.error("Failed to fetch weather data", error);
     } finally {
-      setFetchingWeatherALlData(false);
+      setFetchingWeatherData(false);
     }
   };
   useEffect(() => {
@@ -46,10 +81,45 @@ const Home = () => {
     setIsUpdating((prev) => !prev); // Toggle the updating state
   };
 
-  console.log(weatherAllData);
+  console.log(weatherTodayData.current.time);
 
   return (
     <div className="Home__container">
+      <div className="WeatherToday__container">
+        <div className="WeatherToday--title__container">
+          <h1 className="WeatherToday--title">Current Weather</h1>
+          <button
+            className="WeatherToday--button"
+            onClick={handleFetchCurrentWeather}
+          >
+            Fetch Current Weather
+          </button>
+
+          <button
+            className="WeatherToday--button"
+            onClick={handleStoreCurrentWeather}
+          >
+            Store Current Weather
+          </button>
+        </div>
+        {!fetchingWeatherData ? (
+          <div>
+            <div>
+              Timestamp:{" "}
+              {new Date(weatherTodayData.current.time).toLocaleDateString()}{" "}
+              {new Date(weatherTodayData.current.time).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}
+            </div>
+            <div>Temperature: {weatherTodayData.current.temperature_2m} °C</div>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+
       <div className="WeatherForecast__container">
         <div className="WeatherForecast--title__container">
           <h1 className="WeatherList--title">Today's Forecast</h1>
@@ -73,19 +143,17 @@ const Home = () => {
           </div>
         </div>
 
-        {!fetchingWeatherALlData ? (
-          <h1>
-            Date: {new Date(weatherAllData.hourly.time[0]).toLocaleDateString()}
-          </h1>
-        ) : (
-          <p>Fetching Date...</p>
-        )}
-
-        {!fetchingWeatherALlData ? (
-          <WeatherList weatherAllData={weatherAllData} />
+        {!fetchingWeatherData ? (
+          <WeatherList weatherForecastData={weatherForecastData} />
         ) : (
           <p>Fetching Weather...</p>
         )}
+      </div>
+
+      <div className="WeatherHistorical__container">
+        <div className="WeatherHistorical--title__container">
+          <h1 className="WeatherHistorical--title">Historical Weather</h1>
+        </div>
       </div>
     </div>
   );

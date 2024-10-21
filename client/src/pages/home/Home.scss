@@ -5,7 +5,52 @@
 
 .Home__container {
   margin: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
+
+// WeatherToday
+.WeatherToday__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Default alignment
+  justify-content: center;
+  background-color: #e3f4fe;
+  padding: 20px;
+  border-radius: 10px;
+  align-items: flex-start;
+  gap: 10px;
+
+  @include sm {
+    align-items: center;
+  }
+
+  @include md {
+    align-items: flex-start;
+  }
+}
+
+.WeatherToday--title__container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.WeatherToday--button {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #71ba73;
+
+  &:hover {
+    background-color: #61a563;
+  }
+}
+
+// WeatherForecast
 .WeatherForecast__container {
   display: flex;
   flex-direction: column;
@@ -34,6 +79,28 @@
   gap: 20px;
 }
 
+// WeatherHistorical
+.WeatherHistorical__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Default alignment
+  justify-content: center;
+  background-color: #e3f4fe;
+  padding: 20px;
+  border-radius: 10px;
+  align-items: flex-start;
+  overflow-x: hidden;
+
+  @include sm {
+    align-items: center;
+  }
+
+  @include md {
+    align-items: flex-start;
+  }
+}
+
+// toggle
 .toggle-switch__container {
   display: flex;
   flex-direction: column;
