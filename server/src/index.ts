@@ -7,6 +7,7 @@ import { Pool } from "pg";
 import openmeteoRoute from "../routes/openmeteo.route";
 import authRoute from "../routes/auth.route";
 import userRoute from "../routes/user.route";
+import snapshotRoute from "../routes/snapshot.route";
 
 const PORT = process.env.PORT || 5000;
 const connectionString = process.env.DATABASE_URL;
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/openmeteo", openmeteoRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/snapshot", snapshotRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
