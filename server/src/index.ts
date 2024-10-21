@@ -6,6 +6,7 @@ import { Pool } from "pg";
 
 import openmeteoRoute from "../routes/openmeteo.route";
 import authRoute from "../routes/auth.route";
+import userRoute from "../routes/user.route";
 
 const PORT = process.env.PORT || 5000;
 const connectionString = process.env.DATABASE_URL;
@@ -32,6 +33,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 app.use("/api/openmeteo", openmeteoRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
