@@ -48,6 +48,11 @@
   &:hover {
     background-color: #61a563;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
 }
 
 // WeatherForecast
