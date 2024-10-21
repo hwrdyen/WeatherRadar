@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { userId: userFound.id },
       process.env.JWT_SECRET_KEY as string,
-      { expiresIn: "10m" }
+      { expiresIn: "1d" }
     );
 
     const { password: userFoundPassword, ...userFoundInfo } = userFound;
@@ -76,15 +76,10 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  try {
-    res
-      .cookie("auth_token", "", {
-        expires: new Date(0),
-      })
-      .status(200)
-      .json({ message: "Logout successfully!" });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to lougout!" });
-  }
+  res
+    .cookie("auth_token", "", {
+      expires: new Date(0),
+    })
+    .status(200)
+    .json({ message: "Logout successfully!" });
 };

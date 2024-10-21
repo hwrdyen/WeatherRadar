@@ -17,7 +17,7 @@ export const getPersonalProfile = async (
   try {
     const user = await prismaClient.user.findUnique({
       where: { id: userId },
-      select: { email: true, username: true, avatar: true }, // Select only the fields you want
+      select: { id: true, email: true, username: true, avatar: true }, // Select only the fields you want
     });
 
     if (!user) {
