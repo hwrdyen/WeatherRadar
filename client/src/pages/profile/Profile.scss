@@ -1,0 +1,35 @@
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/typography" as *;
+@use "../../styles/variable" as *;
+
+.Profile__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.Profile--info__container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  gap: 20px;
+}
+.Profile--button__container {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.Profile--button {
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background-color: rgb(235, 232, 232);
+  cursor: pointer;
+}
+
+.Profile--button:hover {
+  background-color: rgb(163, 159, 159);
+}
