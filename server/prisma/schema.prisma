@@ -26,7 +26,7 @@ model WeatherToday {
     temperature_2m Float
 
     // Relation to the User model
-    user user @relation(fields: [userId], references: [id])
+    user user @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     createdAt DateTime @default(now())
 }

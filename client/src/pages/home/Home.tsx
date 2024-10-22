@@ -15,7 +15,7 @@ import {
 } from "../../config/openmeteo-config";
 import { AuthContext } from "../../context/AuthContext";
 import ToggleSwitch from "../../components/toggleSwitch/ToggleSwitch";
-import HistoricalWeather from "../../components/historicalWeather/HIstoricalWeather";
+import HistoricalWeather from "../../components/historicalWeather/HistoricalWeather";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -297,12 +297,10 @@ const Home = () => {
           </button>
         </div>
         {!fetchingCurrentWeatherData ? (
-          <div>
-            <WeatherCard
-              time={weatherCurrentData.current.time}
-              temperature={weatherCurrentData.current.temperature_2m}
-            />
-          </div>
+          <WeatherCard
+            time={weatherCurrentData.current.time}
+            temperature={weatherCurrentData.current.temperature_2m}
+          />
         ) : (
           <p>Fetching Current Weather...</p>
         )}
