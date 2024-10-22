@@ -1,4 +1,6 @@
+import "./Layout.scss";
 import Navbar from "../components/navbar/Navbar";
+import Footer from "../components/footer/Footer";
 
 interface Props {
   children: React.ReactNode;
@@ -6,9 +8,10 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   return (
-    <div>
+    <div className="Layout__container">
       <Navbar />
-      <div>{children}</div>
+      <div className="Layout--child__container">{children}</div>
+      <Footer />
     </div>
   );
 };

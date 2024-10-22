@@ -1,0 +1,26 @@
+@use "variable" as *;
+@use "typography" as *;
+
+@mixin sm {
+  @media (min-width: 0px) and (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (min-width: 601px) and (max-width: 960px) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (min-width: 961px) and (max-width: 1280px) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: 1281px) {
+    @content;
+  }
+}
