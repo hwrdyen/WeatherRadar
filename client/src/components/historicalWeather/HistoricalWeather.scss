@@ -1,0 +1,113 @@
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/typography" as *;
+@use "../../styles/variable" as *;
+
+// WeatherHistorical
+.WeatherHistorical__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Default alignment
+  justify-content: center;
+  background-color: #e3f4fe;
+  padding: 20px;
+  border-radius: 10px;
+  align-items: flex-start;
+  overflow-x: hidden;
+
+  @include sm {
+    align-items: center;
+  }
+
+  @include md {
+    align-items: flex-start;
+  }
+}
+
+.WeatherHistorical--title__container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.WeatherHistorical--mobileButton {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #71ba73;
+  display: none;
+
+  &:hover {
+    background-color: #61a563;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
+
+  @include lg {
+    display: none;
+  }
+
+  @include md {
+    display: none;
+  }
+
+  @include sm {
+    display: flex;
+  }
+}
+
+.WeatherHistorical--tabletButton {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #71ba73;
+  text-align: center;
+
+  &:hover {
+    background-color: #61a563;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
+
+  @include lg {
+    display: flex;
+  }
+
+  @include md {
+    display: flex;
+  }
+
+  @include sm {
+    display: none;
+  }
+}
+
+.WeatherHistorical--resetButton {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #e85a5a;
+
+  &:hover {
+    background-color: #cf5151;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
+}
