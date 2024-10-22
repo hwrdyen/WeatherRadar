@@ -12,6 +12,15 @@ export interface WeatherForecastProps {
   };
 }
 
+export interface WeatherStoredProps {
+  id: string;
+  userId: string;
+  time: string;
+  interval: number;
+  temperature_2m: number;
+  createdAt: Date;
+}
+
 export interface WeatherCardProps {
   time: string;
   temperature: number;

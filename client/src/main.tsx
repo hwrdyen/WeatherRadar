@@ -8,7 +8,7 @@ import { SnackbarProvider } from "notistack";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthContextProvider>
-      <SnackbarProvider>
+      <SnackbarProvider autoHideDuration={1000}>
         <App />
       </SnackbarProvider>
     </AuthContextProvider>

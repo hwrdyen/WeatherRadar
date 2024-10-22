@@ -105,6 +105,69 @@
   }
 }
 
+// WeatherStored
+.WeatherStored__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Default alignment
+  justify-content: center;
+  background-color: #e3f4fe;
+  padding: 20px;
+  border-radius: 10px;
+  align-items: flex-start;
+  overflow-x: hidden;
+
+  @include sm {
+    align-items: center;
+  }
+
+  @include md {
+    align-items: flex-start;
+  }
+}
+
+.WeatherStored--title__container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.WeatherStored--button {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #71ba73;
+
+  &:hover {
+    background-color: #61a563;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
+}
+
+.WeatherStored--resetButton {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: white;
+  background-color: #e85a5a;
+
+  &:hover {
+    background-color: #cf5151;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #8d8d8d;
+  }
+}
+
 // toggle
 .toggle-switch__container {
   display: flex;

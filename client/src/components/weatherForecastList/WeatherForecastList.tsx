@@ -1,13 +1,13 @@
-import "./WeatherList.scss";
+import "./WeatherForecastList.scss";
 import { WeatherForecastProps } from "../../config/openmeteo-config";
 import WeatherCard from "../weatherCard/WeatherCard";
 
-const WeatherList: React.FC<{ weatherForecastData: WeatherForecastProps }> = ({
-  weatherForecastData,
-}) => {
+const WeatherForecastList: React.FC<{
+  weatherForecastData: WeatherForecastProps;
+}> = ({ weatherForecastData }) => {
   return (
-    <div className="WeatherList__container">
-      <div className="WeatherList--data__container">
+    <div className="WeatherForecastList__container">
+      <div className="WeatherForecastList--data__container">
         {weatherForecastData.hourly.time.map((time, index) => (
           <WeatherCard
             key={time}
@@ -20,4 +20,4 @@ const WeatherList: React.FC<{ weatherForecastData: WeatherForecastProps }> = ({
   );
 };
 
-export default WeatherList;
+export default WeatherForecastList;

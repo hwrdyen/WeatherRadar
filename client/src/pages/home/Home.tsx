@@ -3,12 +3,15 @@ import { useContext, useEffect, useState } from "react";
 import { apiRequest } from "../../lib/apiRequest";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
-import WeatherList from "../../components/weatherList/WeatherList";
+import WeatherForecastList from "../../components/weatherForecastList/WeatherForecastList";
 import {
   WeatherTodayProps,
   WeatherForecastProps,
+  WeatherStoredProps,
 } from "../../config/openmeteo-config";
 import { AuthContext } from "../../context/AuthContext";
+import WeatherCard from "../../components/weatherCard/WeatherCard";
+import WeatherStoredList from "../../components/weatherStoredList/WeatherStoredList";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -145,7 +148,37 @@ const Home = () => {
     setIsForecastUpdating((prev) => !prev); // Toggle the updating state
   };
 
-  console.log(weatherCurrentData);
+  // Historical Weather
+
+  // Stored Weather
+  const [weatherStoredData, setWeatherStoredData] = useState<
+    WeatherStoredProps[] | null
+  >([]);
+  const [fetchingStoredWeatherData, setFetchingStoredWeatherData] =
+    useState(false);
+  const fetchStoredWeatherData = async () => {
+    setFetchingStoredWeatherData(true);
+    await apiRequest
+      .get("/snapshot/historical-snapshot")
+      .then((response) => {
+        setWeatherStoredData(response.data);
+        enqueueSnackbar("Load Snapshots Successfully!", {
+          variant: "success",
+        });
+      })
+      .catch((error) => {
+        enqueueSnackbar("Error", {
+          variant: "error",
+        });
+        console.log(error);
+      })
+      .finally(() => {
+        setFetchingStoredWeatherData(false);
+      });
+  };
+  const handleReset = () => {
+    setWeatherStoredData([]);
+  };
 
   return (
     <div className="Home__container">
@@ -181,30 +214,42 @@ const Home = () => {
         </div>
         {!fetchingCurrentWeatherData ? (
           <div>
-            <div>
-              Timestamp:{" "}
-              {new Date(weatherCurrentData.current.time).toLocaleDateString()}{" "}
-              {new Date(weatherCurrentData.current.time).toLocaleTimeString(
-                [],
-                {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                }
-              )}
-            </div>
-            <div>
-              Temperature: {weatherCurrentData.current.temperature_2m} °C
-            </div>
+            <WeatherCard
+              time={weatherCurrentData.current.time}
+              temperature={weatherCurrentData.current.temperature_2m}
+            />
           </div>
         ) : (
           <p>Fetching Current Weather...</p>
         )}
       </div>
 
+      <div className="WeatherStored__container">
+        <div className="WeatherStored--title__container">
+          <h1 className="WeatherStored--title">Stored Weather</h1>
+          <button
+            className="WeatherStored--button"
+            disabled={!isLoggedIn || fetchingStoredWeatherData}
+            onClick={fetchStoredWeatherData}
+          >
+            Load 5 Recent Readings
+          </button>
+          <button className="WeatherStored--resetButton" onClick={handleReset}>
+            Reset
+          </button>
+        </div>
+        {weatherStoredData ? (
+          <div>
+            <WeatherStoredList weatherStoredData={weatherStoredData} />
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+
       <div className="WeatherForecast__container">
         <div className="WeatherForecast--title__container">
-          <h1 className="WeatherList--title">Today's Forecast</h1>
+          <h1 className="WeatherForecast--title">Today's Forecast</h1>
           <div className="toggle-switch__container">
             <label className="toggle-switch__label">
               <input
@@ -226,7 +271,7 @@ const Home = () => {
         </div>
 
         {!fetchingForecastWeatherData ? (
-          <WeatherList weatherForecastData={weatherForecastData} />
+          <WeatherForecastList weatherForecastData={weatherForecastData} />
         ) : (
           <p>Fetching Forecast Weather...</p>
         )}
