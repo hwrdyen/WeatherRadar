@@ -6,8 +6,8 @@ const WeatherStoredList: React.FC<{
   weatherStoredData: WeatherStoredProps[];
 }> = ({ weatherStoredData }) => {
   return (
-    <div className="WeatherList__container">
-      <div className="WeatherList--data__container">
+    <div className="WeatherStoredList__container">
+      <div className="WeatherStoredList--data__container">
         {weatherStoredData.map((weatherSingleStoredData) => (
           <WeatherCard
             key={weatherSingleStoredData.id}
