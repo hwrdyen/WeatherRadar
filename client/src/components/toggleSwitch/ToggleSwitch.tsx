@@ -1,3 +1,5 @@
+import "./ToggleSwitch.scss";
+
 interface ToggleSwitchProps {
   isUpdating: boolean; // Change to match your prop name
   toggleUpdate: () => void; // Function to toggle the state
