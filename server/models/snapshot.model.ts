@@ -48,7 +48,7 @@ export const getSnapshotWeatherToday = async (req: Request, res: Response) => {
       take: 5, // Limit the number of results to 5
     });
 
-    res.status(200).json({ message: SnapshotArray });
+    res.status(200).json(SnapshotArray);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong!" });

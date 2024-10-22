@@ -1,14 +1,15 @@
 import "./Register.scss";
-import { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { apiRequest } from "../../lib/apiRequest";
 import { v4 as uuidv4 } from "uuid";
+import { useSnackbar } from "notistack";
 
 const Register = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,30 +20,29 @@ const Register = () => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    try {
-      await apiRequest.post("/auth/register", {
+    await apiRequest
+      .post("/auth/register", {
         id,
         username,
         email,
         password,
+      })
+      .then(() => {
+        enqueueSnackbar("Register Successfully!", {
+          variant: "success",
+        });
+        navigate("/login");
+      })
+      .catch((error) => {
+        enqueueSnackbar("Error", {
+          variant: "error",
+        });
+        setError("Something went wrong!");
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-
-      navigate("/login");
-    } catch (err) {
-      // Check if the error is an instance of AxiosError
-      if (err instanceof AxiosError) {
-        // Access error message from the response data
-        console.log(err.response?.data.message);
-        setError(err.response?.data.message || "An error occurred.");
-      } else {
-        // Handle non-Axios errors
-        console.log("Error:", err);
-        setError("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      // Ensure loading state is reset
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -74,7 +74,7 @@ const Register = () => {
         <button className="Register--formButton" disabled={isLoading}>
           Register
         </button>
-        {error && <span className="Register--error">{error}</span>}
+        {error && <span className="Register__error">{error}</span>}
         <p>
           Already have an account? <Link to="/login">Sign In</Link>
         </p>

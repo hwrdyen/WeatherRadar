@@ -5,6 +5,7 @@ import { UserProfile } from "../../config/user-config";
 import { apiRequest } from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { AxiosError } from "axios";
+import { useSnackbar } from "notistack";
 
 const Profile = () => {
   const [error, setError] = useState("");
@@ -47,13 +48,26 @@ const Profile = () => {
 
   // Logout
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const handleLogout = async () => {
     setLogoutLoading(true);
 
     try {
-      await apiRequest.post("/auth/logout");
-      updateUser(null);
-      navigate("/");
+      await apiRequest
+        .post("/auth/logout")
+        .then(() => {
+          updateUser(null);
+          enqueueSnackbar("Logout Successfully!", {
+            variant: "success",
+          });
+          navigate("/");
+        })
+        .catch((error) => {
+          enqueueSnackbar("Error", {
+            variant: "error",
+          });
+          console.log(error);
+        });
     } catch (err) {
       // Check if the error is an instance of AxiosError
       if (err instanceof AxiosError) {
@@ -70,17 +84,26 @@ const Profile = () => {
 
   // Delete
   const handleDelete = async () => {
-    try {
-      setDeleteLoading(true);
-      await apiRequest.delete("/user/delete-profile");
-      await updateUser(null);
-      navigate("/");
-    } catch (err) {
-      console.error("Failed to fetch team data", err);
-      setError("Failed to fetch team data."); // Set error message on fetch failure
-    } finally {
-      setDeleteLoading(false); // Stop loading when done
-    }
+    setDeleteLoading(true);
+    await apiRequest
+      .delete("/user/delete-profile")
+      .then(() => {
+        updateUser(null);
+        enqueueSnackbar("Delete User Successfully!", {
+          variant: "success",
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        enqueueSnackbar("Error", {
+          variant: "error",
+        });
+        setError("Something went wrong!");
+        console.log(error);
+      })
+      .finally(() => {
+        setDeleteLoading(false);
+      });
   };
 
   if (loading) {

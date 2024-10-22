@@ -1,9 +1,9 @@
 import "./Login.scss";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequest } from "../../lib/apiRequest";
+import { useSnackbar } from "notistack";
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -18,6 +18,7 @@ const Login = () => {
   const { updateUser } = authContext;
 
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,27 +27,28 @@ const Login = () => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    try {
-      const res = await apiRequest.post("/auth/login", {
+    await apiRequest
+      .post("/auth/login", {
         email,
         password,
+      })
+      .then((res) => {
+        updateUser(res.data);
+        enqueueSnackbar("Login Successfully!", {
+          variant: "success",
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        enqueueSnackbar("Error", {
+          variant: "error",
+        });
+        setError("Something went wrong!");
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      updateUser(res.data);
-      navigate("/");
-    } catch (err) {
-      // Check if the error is an instance of AxiosError
-      if (err instanceof AxiosError) {
-        // Access error message from the response data
-        console.log(err.response?.data.message);
-        setError(err.response?.data.message || "An error occurred.");
-      } else {
-        // Handle non-Axios errors
-        console.log("Error:", err);
-        setError("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (

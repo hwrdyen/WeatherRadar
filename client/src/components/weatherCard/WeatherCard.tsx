@@ -5,6 +5,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ time, temperature }) => {
   return (
     <div className="WeatherCard__container">
       <div className="WeatherCard--info__container">
+        <p>{new Date(time).toLocaleDateString()}</p>
         <p>
           {new Date(time).toLocaleTimeString([], {
             hour: "2-digit",

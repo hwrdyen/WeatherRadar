@@ -3,11 +3,11 @@
 @use "../../styles/typography" as *;
 @use "../../styles/variable" as *;
 
-.WeatherList__container {
+.WeatherForecastList__container {
   width: 100%;
 }
 
-.WeatherList--data__container {
+.WeatherForecastList--data__container {
   display: flex;
   flex-direction: row;
   align-items: center;
