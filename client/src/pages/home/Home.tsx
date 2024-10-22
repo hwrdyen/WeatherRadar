@@ -3,15 +3,17 @@ import { useContext, useEffect, useState } from "react";
 import { apiRequest } from "../../lib/apiRequest";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
+import WeatherCard from "../../components/weatherCard/WeatherCard";
 import WeatherForecastList from "../../components/weatherForecastList/WeatherForecastList";
+import WeatherStoredList from "../../components/weatherStoredList/WeatherStoredList";
 import {
   WeatherTodayProps,
   WeatherForecastProps,
   WeatherStoredProps,
+  WeatherHistoricalProps,
 } from "../../config/openmeteo-config";
 import { AuthContext } from "../../context/AuthContext";
-import WeatherCard from "../../components/weatherCard/WeatherCard";
-import WeatherStoredList from "../../components/weatherStoredList/WeatherStoredList";
+import HistoricalChart from "../../components/historicalChart/HistoricalChart";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -105,6 +107,36 @@ const Home = () => {
     }
   };
 
+  // Stored Weather
+  const [weatherStoredData, setWeatherStoredData] = useState<
+    WeatherStoredProps[] | null
+  >([]);
+  const [fetchingStoredWeatherData, setFetchingStoredWeatherData] =
+    useState(false);
+  const fetchStoredWeatherData = async () => {
+    setFetchingStoredWeatherData(true);
+    await apiRequest
+      .get("/snapshot/historical-snapshot")
+      .then((response) => {
+        setWeatherStoredData(response.data);
+        enqueueSnackbar("Load Snapshots Successfully!", {
+          variant: "success",
+        });
+      })
+      .catch((error) => {
+        enqueueSnackbar("Error", {
+          variant: "error",
+        });
+        console.log(error);
+      })
+      .finally(() => {
+        setFetchingStoredWeatherData(false);
+      });
+  };
+  const handleStoredReset = () => {
+    setWeatherStoredData([]);
+  };
+
   // Today's Forecast
   const [weatherForecastData, setWeatherForecastData] =
     useState<WeatherForecastProps>({
@@ -149,20 +181,16 @@ const Home = () => {
   };
 
   // Historical Weather
-
-  // Stored Weather
-  const [weatherStoredData, setWeatherStoredData] = useState<
-    WeatherStoredProps[] | null
-  >([]);
-  const [fetchingStoredWeatherData, setFetchingStoredWeatherData] =
-    useState(false);
-  const fetchStoredWeatherData = async () => {
-    setFetchingStoredWeatherData(true);
+  const [weatherHistoricalData, setWeatherHistoricalData] =
+    useState<WeatherHistoricalProps | null>(null);
+  const [fetchingHistoricalData, setFetchingHistoricalData] = useState(false);
+  const fetchHistoricalData = async () => {
+    setFetchingHistoricalData(true);
     await apiRequest
-      .get("/snapshot/historical-snapshot")
-      .then((response) => {
-        setWeatherStoredData(response.data);
-        enqueueSnackbar("Load Snapshots Successfully!", {
+      .get("/openmeteo/historical-weather")
+      .then((res) => {
+        setWeatherHistoricalData(res.data);
+        enqueueSnackbar("Load Historical Chart Successfully!", {
           variant: "success",
         });
       })
@@ -173,11 +201,11 @@ const Home = () => {
         console.log(error);
       })
       .finally(() => {
-        setFetchingStoredWeatherData(false);
+        setFetchingHistoricalData(false);
       });
   };
-  const handleReset = () => {
-    setWeatherStoredData([]);
+  const handleHistoricalReset = () => {
+    setWeatherHistoricalData(null);
   };
 
   return (
@@ -205,7 +233,14 @@ const Home = () => {
           </div>
 
           <button
-            className="WeatherToday--button"
+            className="WeatherToday--mobileButton"
+            onClick={handleStoreCurrentWeather}
+            disabled={!isLoggedIn || storingSnapshot}
+          >
+            Store
+          </button>
+          <button
+            className="WeatherToday--tabletButton"
             onClick={handleStoreCurrentWeather}
             disabled={!isLoggedIn || storingSnapshot}
           >
@@ -228,20 +263,28 @@ const Home = () => {
         <div className="WeatherStored--title__container">
           <h1 className="WeatherStored--title">Stored Weather</h1>
           <button
-            className="WeatherStored--button"
+            className="WeatherStored--mobileButton"
+            disabled={!isLoggedIn || fetchingStoredWeatherData}
+            onClick={fetchStoredWeatherData}
+          >
+            Load
+          </button>
+          <button
+            className="WeatherStored--tabletButton"
             disabled={!isLoggedIn || fetchingStoredWeatherData}
             onClick={fetchStoredWeatherData}
           >
             Load 5 Recent Readings
           </button>
-          <button className="WeatherStored--resetButton" onClick={handleReset}>
+          <button
+            className="WeatherStored--resetButton"
+            onClick={handleStoredReset}
+          >
             Reset
           </button>
         </div>
         {weatherStoredData ? (
-          <div>
-            <WeatherStoredList weatherStoredData={weatherStoredData} />
-          </div>
+          <WeatherStoredList weatherStoredData={weatherStoredData} />
         ) : (
           ""
         )}
@@ -280,7 +323,38 @@ const Home = () => {
       <div className="WeatherHistorical__container">
         <div className="WeatherHistorical--title__container">
           <h1 className="WeatherHistorical--title">Historical Weather</h1>
+          <button
+            className="WeatherHistorical--mobileButton"
+            onClick={fetchHistoricalData}
+            disabled={fetchingHistoricalData}
+          >
+            Load
+          </button>
+
+          <button
+            className="WeatherHistorical--tabletButton"
+            onClick={fetchHistoricalData}
+            disabled={fetchingHistoricalData}
+          >
+            Load Historical Chart
+          </button>
+
+          <button
+            className="WeatherHistorical--resetButton"
+            onClick={handleHistoricalReset}
+          >
+            Reset
+          </button>
         </div>
+        {weatherHistoricalData ? (
+          <HistoricalChart
+            dates={weatherHistoricalData.daily.time}
+            maxTemperatures={weatherHistoricalData.daily.temperature_2m_max}
+            minTemperatures={weatherHistoricalData.daily.temperature_2m_min}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

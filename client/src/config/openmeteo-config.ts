@@ -21,7 +21,21 @@ export interface WeatherStoredProps {
   createdAt: Date;
 }
 
+export interface WeatherHistoricalProps {
+  daily: {
+    time: string[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+  };
+}
+
 export interface WeatherCardProps {
   time: string;
   temperature: number;
+}
+
+export interface HistoricalChartProps {
+  dates: string[];
+  maxTemperatures: number[];
+  minTemperatures: number[];
 }

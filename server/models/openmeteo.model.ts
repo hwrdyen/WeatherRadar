@@ -33,10 +33,12 @@ export const fetchWeather = async (req: Request, res: Response) => {
 export const fetchHistoricalWeather = async (req: Request, res: Response) => {
   // set end
   const now = new Date();
-  const end = now.toISOString().split("T")[0];
+  const endDate = new Date(now);
+  endDate.setDate(now.getDate() - 1);
+  const end = endDate.toISOString().split("T")[0];
   // set start
   const startDate = new Date(now);
-  startDate.setDate(now.getDate() - 5);
+  startDate.setDate(now.getDate() - 6);
   const start = startDate.toISOString().split("T")[0];
 
   console.log("Start Date:", start);
@@ -49,7 +51,8 @@ export const fetchHistoricalWeather = async (req: Request, res: Response) => {
         params: {
           latitude: 52.52, // dynamic based on user location (req.query.latitude)
           longitude: 13.41, // (req.query.longitude)
-          hourly: "temperature_2m",
+          daily: ["temperature_2m_max", "temperature_2m_min"],
+          timezone: "auto",
           start_date: start,
           end_date: end,
         },
