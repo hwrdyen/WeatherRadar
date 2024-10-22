@@ -5,6 +5,8 @@
 
 **WeatherRadar** is a responsive full-stack web application for tracking current weather conditions, viewing historical data, and managing weather snapshots with secure authentication. It features real-time data fetching, user-friendly database interactions using Prisma with PostgreSQL, and a dynamic React-based UI that ensures a seamless user experience across all devices.
 
+- video demo: https://www.loom.com/share/0108b7f2bc8149309a0f6909fab2c799?sid=2aeabdcc-7a70-4a95-9bc4-8255c0785c5d
+
 ## Getting Started
 
 ### Prerequisites
