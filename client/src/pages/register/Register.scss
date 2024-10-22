@@ -1,0 +1,40 @@
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/typography" as *;
+@use "../../styles/variable" as *;
+
+.Register__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(225, 236, 243);
+}
+
+.Register--form__container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  gap: 20px;
+}
+
+.Register--formInput {
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.Register--formButton {
+  padding: 10px;
+  border-radius: 20px;
+  background-color: rgb(177, 221, 244);
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(119, 194, 234);
+  }
+}
+
+.Register__error {
+  color: red;
+}

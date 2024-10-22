@@ -1,0 +1,25 @@
+@use "variable" as *;
+@use "typography" as *;
+@use "mixins" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Outfit", sans-serif;
+}
+
+h1 {
+  @include md {
+    font-size: 30px;
+  }
+
+  @include sm {
+    font-size: 25px;
+  }
+}

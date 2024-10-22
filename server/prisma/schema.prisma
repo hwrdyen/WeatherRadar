@@ -1,0 +1,32 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model user {
+    id        String         @id @unique @map("_id")
+    email     String         @unique
+    username  String         @unique
+    password  String
+    avatar    String?
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+    weather   WeatherToday[] // Relation to WeatherToday model
+}
+
+model WeatherToday {
+    id             String @id @unique @map("_id")
+    userId         String
+    time           String
+    interval       Int
+    temperature_2m Float
+
+    // Relation to the User model
+    user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+}
