@@ -142,14 +142,14 @@ const Profile = () => {
       )}
       <div className="Profile--button__container">
         <button
-          className="Profile--button"
+          className="Profile--logoutButton"
           disabled={logoutLoading}
           onClick={handleLogout}
         >
           Logout
         </button>
         <button
-          className="Profile--button"
+          className="Profile--deleteButton"
           onClick={handleDelete}
           disabled={deleteLoading}
         >

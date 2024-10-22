@@ -168,9 +168,15 @@ const Home = () => {
         .get("/snapshot/historical-snapshot")
         .then((response) => {
           setWeatherStoredData(response.data);
-          enqueueSnackbar("Load Snapshots Successfully!", {
-            variant: "success",
-          });
+          if (response.data.length > 1) {
+            enqueueSnackbar("Load Snapshots Successfully!", {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar("No Snapshots Available!", {
+              variant: "error",
+            });
+          }
         })
         .catch((error) => {
           enqueueSnackbar("Error", {
@@ -336,7 +342,7 @@ const Home = () => {
             className="WeatherStored--resetButton"
             onClick={handleStoredReset}
           >
-            Reset
+            Clear
           </button>
         </div>
         {weatherStoredData ? (
@@ -399,7 +405,7 @@ const Home = () => {
             className="WeatherHistorical--resetButton"
             onClick={handleHistoricalReset}
           >
-            Reset
+            Clear
           </button>
         </div>
         {weatherHistoricalData ? (
