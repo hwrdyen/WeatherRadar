@@ -169,7 +169,7 @@ const Home = () => {
         .get("/snapshot/historical-snapshot")
         .then((response) => {
           setWeatherStoredData(response.data);
-          if (response.data.length > 1) {
+          if (response.data.length > 0) {
             enqueueSnackbar("Load Snapshots Successfully!", {
               variant: "success",
             });
