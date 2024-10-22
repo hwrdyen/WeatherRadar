@@ -11,6 +11,7 @@ import {
   WeatherForecastProps,
   WeatherStoredProps,
   WeatherHistoricalProps,
+  GeoLocation,
 } from "../../config/openmeteo-config";
 import { AuthContext } from "../../context/AuthContext";
 import HistoricalChart from "../../components/historicalChart/HistoricalChart";
@@ -23,6 +24,45 @@ const Home = () => {
     );
   }
   const { isLoggedIn } = authContext;
+
+  // Get Longitude and Latitude
+  const [geoLocation, setGeoLocation] = useState<GeoLocation>({
+    latitude: null,
+    longitude: null,
+  });
+  const getCurrentLocation = async (): Promise<void> => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position: GeolocationPosition) => {
+          const latitude: number = position.coords.latitude;
+          const longitude: number = position.coords.longitude;
+          setGeoLocation({ longitude, latitude });
+        },
+        (error: GeolocationPositionError) => {
+          console.error("Error getting location: ", error.message);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+  useEffect(() => {
+    getCurrentLocation();
+
+    let interval: NodeJS.Timeout; // Declare interval variable
+
+    if (isCurrentUpdating) {
+      // Set interval to fetch weather data every 60 seconds
+      interval = setInterval(() => {
+        getCurrentLocation();
+      }, 60000); // 60,000 milliseconds = 60 seconds
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, []);
 
   // Today's/Current Weather
   const [weatherCurrentData, setWeatherCurrentData] =
@@ -37,13 +77,18 @@ const Home = () => {
     useState(true);
   const [isCurrentUpdating, setIsCurrentUpdating] = useState(true);
   const fetchCurrentWeatherData = async () => {
-    try {
-      const response = await apiRequest.get("/openmeteo/weather");
-      setWeatherCurrentData(response.data);
-    } catch (error) {
-      console.error("Failed to fetch weather data", error);
-    } finally {
-      setFetchingCurrentWeatherData(false);
+    if (geoLocation.latitude != null && geoLocation.longitude != null) {
+      try {
+        const response = await apiRequest.post("/openmeteo/weather", {
+          latitude: geoLocation.latitude,
+          longitude: geoLocation.longitude,
+        });
+        setWeatherCurrentData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch weather data", error);
+      } finally {
+        setFetchingCurrentWeatherData(false);
+      }
     }
   };
   useEffect(() => {
@@ -62,7 +107,7 @@ const Home = () => {
         clearInterval(interval);
       }
     };
-  }, [isCurrentUpdating]);
+  }, [isCurrentUpdating, geoLocation]);
   const toggleCurrentUpdate = () => {
     setIsCurrentUpdating((prev) => !prev); // Toggle the updating state
   };
@@ -73,7 +118,10 @@ const Home = () => {
   const handleStoreCurrentWeather = async () => {
     setStoringSnapshot(true);
     try {
-      const fetchLatestResponse = await apiRequest.get("/openmeteo/weather");
+      const fetchLatestResponse = await apiRequest.post("/openmeteo/weather", {
+        latitude: geoLocation.latitude,
+        longitude: geoLocation.longitude,
+      });
       setWeatherCurrentData(fetchLatestResponse.data);
 
       const id = uuidv4();
@@ -115,23 +163,25 @@ const Home = () => {
     useState(false);
   const fetchStoredWeatherData = async () => {
     setFetchingStoredWeatherData(true);
-    await apiRequest
-      .get("/snapshot/historical-snapshot")
-      .then((response) => {
-        setWeatherStoredData(response.data);
-        enqueueSnackbar("Load Snapshots Successfully!", {
-          variant: "success",
+    if (geoLocation.latitude != null && geoLocation.longitude != null) {
+      await apiRequest
+        .get("/snapshot/historical-snapshot")
+        .then((response) => {
+          setWeatherStoredData(response.data);
+          enqueueSnackbar("Load Snapshots Successfully!", {
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar("Error", {
+            variant: "error",
+          });
+          console.log(error);
+        })
+        .finally(() => {
+          setFetchingStoredWeatherData(false);
         });
-      })
-      .catch((error) => {
-        enqueueSnackbar("Error", {
-          variant: "error",
-        });
-        console.log(error);
-      })
-      .finally(() => {
-        setFetchingStoredWeatherData(false);
-      });
+    }
   };
   const handleStoredReset = () => {
     setWeatherStoredData([]);
@@ -150,7 +200,10 @@ const Home = () => {
   const [isForecastUpdating, setIsForecastUpdating] = useState(true);
   const fetchWeatherForecastData = async () => {
     try {
-      const response = await apiRequest.get("/openmeteo/weather");
+      const response = await apiRequest.post("/openmeteo/weather", {
+        latitude: geoLocation.latitude,
+        longitude: geoLocation.longitude,
+      });
       setWeatherForecastData(response.data);
     } catch (error) {
       console.error("Failed to fetch weather data", error);
@@ -174,7 +227,7 @@ const Home = () => {
         clearInterval(interval);
       }
     };
-  }, [isForecastUpdating]);
+  }, [isForecastUpdating, geoLocation]);
 
   const toggleForecastUpdate = () => {
     setIsForecastUpdating((prev) => !prev); // Toggle the updating state
@@ -187,7 +240,10 @@ const Home = () => {
   const fetchHistoricalData = async () => {
     setFetchingHistoricalData(true);
     await apiRequest
-      .get("/openmeteo/historical-weather")
+      .post("/openmeteo/historical-weather", {
+        latitude: geoLocation.latitude,
+        longitude: geoLocation.longitude,
+      })
       .then((res) => {
         setWeatherHistoricalData(res.data);
         enqueueSnackbar("Load Historical Chart Successfully!", {

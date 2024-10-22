@@ -27,18 +27,16 @@ const Profile = () => {
   const fetchProfileInfo = async () => {
     try {
       const response = await apiRequest.get(`/user/my-profile`);
-      // Check if the response indicates no team found
-      console.log(response.data);
       if (response.data) {
-        setProfileData(response.data); // Set the team data if found
+        setProfileData(response.data);
       } else {
-        setError("No user was associated with this ID."); // Set error message if no team found
+        setError("No user was associated with this ID.");
       }
     } catch (err) {
       console.error("Failed to fetch user data", err);
-      setError("Failed to fetch user data."); // Set error message on fetch failure
+      setError("Failed to fetch user data.");
     } finally {
-      setLoading(false); // Stop loading when done
+      setLoading(false);
     }
   };
 

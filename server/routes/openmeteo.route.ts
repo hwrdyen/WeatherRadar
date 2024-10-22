@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get("/weather", fetchWeather);
-router.get("/historical-weather", fetchHistoricalWeather);
+router.post("/weather", fetchWeather);
+router.post("/historical-weather", fetchHistoricalWeather);
 
 export default router;

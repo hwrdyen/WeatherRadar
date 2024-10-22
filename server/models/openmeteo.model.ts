@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { now } from "moment";
 
 export const fetchWeather = async (req: Request, res: Response) => {
+  const { latitude, longitude } = req.body;
   // set start
   const now = new Date();
   const startDate = new Date(now);
@@ -16,21 +17,29 @@ export const fetchWeather = async (req: Request, res: Response) => {
   try {
     const response = await axios.get("https://api.open-meteo.com/v1/forecast", {
       params: {
-        latitude: 52.52, // dynamic based on user location (req.query.latitude)
-        longitude: 13.41, // (req.query.longitude)
+        latitude,
+        longitude,
         current: "temperature_2m",
         hourly: "temperature_2m",
         start_date: start,
         end_date: end,
       },
     });
-    res.json(response.data);
+
+    if (!response.data) {
+      res
+        .status(501)
+        .json({ error: "Empty Input: Unable to fetch weather data" });
+      return;
+    }
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(500).json({ error: "Unable to fetch weather data" });
   }
 };
 
 export const fetchHistoricalWeather = async (req: Request, res: Response) => {
+  const { latitude, longitude } = req.body;
   // set end
   const now = new Date();
   const endDate = new Date(now);
@@ -41,16 +50,13 @@ export const fetchHistoricalWeather = async (req: Request, res: Response) => {
   startDate.setDate(now.getDate() - 6);
   const start = startDate.toISOString().split("T")[0];
 
-  console.log("Start Date:", start);
-  console.log("End Date:", end);
-
   try {
     const response = await axios.get(
       "https://archive-api.open-meteo.com/v1/archive",
       {
         params: {
-          latitude: 52.52, // dynamic based on user location (req.query.latitude)
-          longitude: 13.41, // (req.query.longitude)
+          latitude,
+          longitude,
           daily: ["temperature_2m_max", "temperature_2m_min"],
           timezone: "auto",
           start_date: start,
@@ -58,7 +64,16 @@ export const fetchHistoricalWeather = async (req: Request, res: Response) => {
         },
       }
     );
-    res.json(response.data);
+
+    if (!response.data) {
+      res
+        .status(501)
+        .json({
+          error: "Empty Input: Unable to fetch historical weather data",
+        });
+      return;
+    }
+    res.status(200).json(response.data);
   } catch (error) {
     res.status(500).json({ error: "Unable to fetch historical weather data" });
   }

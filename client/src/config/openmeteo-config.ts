@@ -1,3 +1,8 @@
+export interface GeoLocation {
+  longitude: number | null;
+  latitude: number | null;
+}
+
 export interface WeatherTodayProps {
   current: {
     time: string;
