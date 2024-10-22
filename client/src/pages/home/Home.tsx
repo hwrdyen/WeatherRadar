@@ -14,7 +14,8 @@ import {
   GeoLocation,
 } from "../../config/openmeteo-config";
 import { AuthContext } from "../../context/AuthContext";
-import HistoricalChart from "../../components/historicalChart/HistoricalChart";
+import ToggleSwitch from "../../components/toggleSwitch/ToggleSwitch";
+import HistoricalWeather from "../../components/historicalWeather/HIstoricalWeather";
 
 const Home = () => {
   const authContext = useContext(AuthContext);
@@ -168,9 +169,15 @@ const Home = () => {
         .get("/snapshot/historical-snapshot")
         .then((response) => {
           setWeatherStoredData(response.data);
-          enqueueSnackbar("Load Snapshots Successfully!", {
-            variant: "success",
-          });
+          if (response.data.length > 1) {
+            enqueueSnackbar("Load Snapshots Successfully!", {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar("No Snapshots Available!", {
+              variant: "error",
+            });
+          }
         })
         .catch((error) => {
           enqueueSnackbar("Error", {
@@ -269,24 +276,10 @@ const Home = () => {
       <div className="WeatherToday__container">
         <div className="WeatherToday--title__container">
           <h1 className="WeatherToday--title">Current Weather</h1>
-          <div className="toggle-switch__container">
-            <label className="toggle-switch__label">
-              <input
-                type="checkbox"
-                className="toggle-switch__input"
-                checked={isCurrentUpdating}
-                onChange={toggleCurrentUpdate}
-              />
-              <span className="toggle-switch__slider"></span>
-            </label>
-            <span
-              className={`toggle-switch__status toggle-switch--${
-                isCurrentUpdating ? "play" : "pause"
-              }`}
-            >
-              {isCurrentUpdating ? "Play" : "Paused"}
-            </span>
-          </div>
+          <ToggleSwitch
+            isUpdating={isCurrentUpdating}
+            toggleUpdate={toggleCurrentUpdate}
+          />
 
           <button
             className="WeatherToday--mobileButton"
@@ -336,7 +329,7 @@ const Home = () => {
             className="WeatherStored--resetButton"
             onClick={handleStoredReset}
           >
-            Reset
+            Clear
           </button>
         </div>
         {weatherStoredData ? (
@@ -349,24 +342,10 @@ const Home = () => {
       <div className="WeatherForecast__container">
         <div className="WeatherForecast--title__container">
           <h1 className="WeatherForecast--title">Today's Forecast</h1>
-          <div className="toggle-switch__container">
-            <label className="toggle-switch__label">
-              <input
-                type="checkbox"
-                className="toggle-switch__input"
-                checked={isForecastUpdating}
-                onChange={toggleForecastUpdate}
-              />
-              <span className="toggle-switch__slider"></span>
-            </label>
-            <span
-              className={`toggle-switch__status toggle-switch--${
-                isForecastUpdating ? "play" : "pause"
-              }`}
-            >
-              {isForecastUpdating ? "Play" : "Paused"}
-            </span>
-          </div>
+          <ToggleSwitch
+            isUpdating={isForecastUpdating}
+            toggleUpdate={toggleForecastUpdate}
+          />
         </div>
 
         {!fetchingForecastWeatherData ? (
@@ -376,42 +355,12 @@ const Home = () => {
         )}
       </div>
 
-      <div className="WeatherHistorical__container">
-        <div className="WeatherHistorical--title__container">
-          <h1 className="WeatherHistorical--title">Historical Weather</h1>
-          <button
-            className="WeatherHistorical--mobileButton"
-            onClick={fetchHistoricalData}
-            disabled={fetchingHistoricalData}
-          >
-            Load
-          </button>
-
-          <button
-            className="WeatherHistorical--tabletButton"
-            onClick={fetchHistoricalData}
-            disabled={fetchingHistoricalData}
-          >
-            Load Historical Chart
-          </button>
-
-          <button
-            className="WeatherHistorical--resetButton"
-            onClick={handleHistoricalReset}
-          >
-            Reset
-          </button>
-        </div>
-        {weatherHistoricalData ? (
-          <HistoricalChart
-            dates={weatherHistoricalData.daily.time}
-            maxTemperatures={weatherHistoricalData.daily.temperature_2m_max}
-            minTemperatures={weatherHistoricalData.daily.temperature_2m_min}
-          />
-        ) : (
-          ""
-        )}
-      </div>
+      <HistoricalWeather
+        fetchHistoricalData={fetchHistoricalData}
+        fetchingHistoricalData={fetchingHistoricalData}
+        handleHistoricalReset={handleHistoricalReset}
+        weatherHistoricalData={weatherHistoricalData}
+      />
     </div>
   );
 };

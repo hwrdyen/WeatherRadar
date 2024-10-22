@@ -24,4 +24,11 @@
   color: black;
   margin-left: auto;
   font-weight: bold;
+
+  &:hover {
+    color: #e3f4fe;
+    background-color: #71ba73;
+    border-radius: 20px;
+    padding: 8px;
+  }
 }
